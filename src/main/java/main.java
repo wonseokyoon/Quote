@@ -1,4 +1,5 @@
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -33,10 +34,13 @@ public class main {
                 deleteQuote(command);
             } else if (command.startsWith("수정?id=")) {
                 modifyQuote(command,scanner);
+            } else if (command.equals("빌드")) {
+                buildQuotesJsonFile();
             }
         }
         scanner.close();    //리소스해제
     }
+
 
     private static void registerQuote(Scanner scanner){ //등록 메서드
         System.out.print("명언: ");
@@ -159,6 +163,35 @@ public class main {
         }
         else {
             System.out.println("파일을 찾을 수 없음");
+        }
+    }
+
+    private static void buildQuotesJsonFile() { //빌드 명령
+        String path = System.getProperty("user.dir");
+        File file=new File(path+"/db/wiseSaying/data.json");
+
+        try(FileWriter writer=new FileWriter(file)){
+            writer.write("[\n");
+            JSONArray jsonArray=new JSONArray(); //jsonarray 객체 생성
+
+            for(int i=0;i<quotes.size();i++){
+                Quote quote=quotes.get(i);
+                JSONObject json=new JSONObject();
+                json.put("id",quote.id);
+                json.put("content",quote.content);
+                json.put("author",quote.author);
+                jsonArray.put(json);
+                writer.write(json.toString());
+                if(i<quotes.size()-1){
+                    writer.write(",\n");
+                }
+            }
+            //writer.write(jsonArray.toString());
+            writer.write("\n]");
+            writer.close();
+            System.out.println("data.json 파일의 내용이 갱신되었습니다.");
+        }catch (IOException e){
+            System.out.println("빌드 실패"+e.getMessage());
         }
     }
 
