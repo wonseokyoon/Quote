@@ -1,5 +1,6 @@
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -149,6 +150,12 @@ public class main {
                         String content=new String(Files.readAllBytes(file.toPath()));
                         JSONObject json=new JSONObject(content);
 
+                        //data.json만 해당되는 예외 허용-> json형식이 아니어도 pass
+                        if(file.getName().equals("data.json")){
+                            //file.getName().equals("data.json");
+                            continue;
+                        }
+
                         int id=json.getInt("id");
                         String quoteContent=json.getString("content");
                         String author=json.getString("author");
@@ -157,6 +164,8 @@ public class main {
                         nextId=Math.max(nextId,id+1);
                     }catch(IOException e){
                         System.out.println("파일 로드 실패"+e.getMessage());
+                    }catch (JSONException e) {
+                        System.out.println("JSON 파싱 실패: " + e.getMessage());
                     }
                 }
             }
@@ -169,6 +178,14 @@ public class main {
     private static void buildQuotesJsonFile() { //빌드 명령
         String path = System.getProperty("user.dir");
         File file=new File(path+"/db/wiseSaying/data.json");
+
+        //기존에 파일 있으면 삭제 후 다시 생성
+        if (file.exists()) {
+            if (!file.delete()) {
+                System.out.println("기존 data.json 파일 삭제 실패. 파일이 사용 중일 수 있습니다.");
+                return; // 삭제 실패 시 메서드를 종료
+            }
+        }
 
         try(FileWriter writer=new FileWriter(file)){
             writer.write("[\n");
