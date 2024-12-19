@@ -12,7 +12,6 @@ import java.util.Scanner;
 //
 //
 //
-//
 
 public class main {
     private static final List<Quote> quotes=new ArrayList<>();
@@ -30,6 +29,8 @@ public class main {
                 break;
             } else if (command.startsWith("등록")) {
                 registerQuote(scanner);
+            } else if (command.equals("목록")) {
+                listQuotes();
             }
         }
         scanner.close();    //리소스해제
@@ -44,8 +45,32 @@ public class main {
         Quote quote=new Quote(nextId++,content,author);
         quotes.add(quote);
 
+
         System.out.println(quote.id+"번 명언이 등록되었습니다.");
     }
+
+    private static void listQuotes() {  //목록 확인 메서드
+        if(quotes.isEmpty()){
+            System.out.println("명언을 등록하세요");
+            return;
+        }
+
+        System.out.println("번호 / 작가 / 명언 ");
+        System.out.println("----------------");
+
+        for(int i=quotes.size()-1;i>=0;i--){    //역순 출력
+            Quote quote=quotes.get(i);  //i번째 명언
+            System.out.println(quote.id+" / "+
+                    quote.author+" / "+ quote.content);
+        }
+    }
+
+
+
+
+
+
+
 
 
 }
