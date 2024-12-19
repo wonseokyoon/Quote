@@ -31,6 +31,8 @@ public class main {
                 registerQuote(scanner);
             } else if (command.equals("목록")) {
                 listQuotes();
+            } else if (command.startsWith("삭제?id=")) {
+                deleteQuote(command);
             }
         }
         scanner.close();    //리소스해제
@@ -65,7 +67,18 @@ public class main {
         }
     }
 
+    private static void deleteQuote(String command){    //삭제 메서드
+        int id=Integer.parseInt(command.substring(6));  //삭제?id=n, id=6번째 문자
 
+        for(int i=0;i<quotes.size();i++){
+            if (quotes.get(i).id==id){  //i번째 명언의 id
+                quotes.remove(i);
+                System.out.println(id+"번 명언이 삭제되었습니다. ");
+                return;
+            }
+        }
+        System.out.println(id+"번 명언은 존재하지 않습니다.");
+    }
 
 
 
