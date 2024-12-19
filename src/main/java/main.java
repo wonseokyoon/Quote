@@ -9,14 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-//
-//
-//
+
 public class main {
     private static final List<Quote> quotes=new ArrayList<>();
     private static int nextId=1;
 
     public static void main(String[] args) {
+        loadQuotesFile();   //기존 파일 로드
         Scanner scanner=new Scanner(System.in);
 
         while(true){
@@ -94,7 +93,6 @@ public class main {
                 System.out.print("명언: ");
                 quote.content=scanner.nextLine().trim();
 
-
                 System.out.println("작가(기존):"+quote.author);
                 System.out.print("작가: ");
                 quote.author=scanner.nextLine().trim();
@@ -135,6 +133,34 @@ public class main {
         }
     }
 
+    private static void loadQuotesFile(){
+        String path = System.getProperty("user.dir");
+        File folder=new File(path+"/db/wiseSaying");
+        File[] listOfFiles=folder.listFiles();
+
+        if(listOfFiles!=null){
+            for(File file:listOfFiles){
+                if(file.isFile() && file.getName().endsWith(".json")){
+                    try{
+                        String content=new String(Files.readAllBytes(file.toPath()));
+                        JSONObject json=new JSONObject(content);
+
+                        int id=json.getInt("id");
+                        String quoteContent=json.getString("content");
+                        String author=json.getString("author");
+
+                        quotes.add(new Quote(id,quoteContent,author));
+                        nextId=Math.max(nextId,id+1);
+                    }catch(IOException e){
+                        System.out.println("파일 로드 실패"+e.getMessage());
+                    }
+                }
+            }
+        }
+        else {
+            System.out.println("파일을 찾을 수 없음");
+        }
+    }
 
 
 }
