@@ -12,7 +12,6 @@ import java.util.Scanner;
 //
 //
 //
-
 public class main {
     private static final List<Quote> quotes=new ArrayList<>();
     private static int nextId=1;
@@ -49,6 +48,8 @@ public class main {
         Quote quote=new Quote(nextId++,content,author);
         quotes.add(quote);
 
+        saveQuoteToFile(quote); //파일에 저장
+        saveLastId();   //ID 저장
 
         System.out.println(quote.id+"번 명언이 등록되었습니다.");
     }
@@ -76,10 +77,12 @@ public class main {
             if (quotes.get(i).id==id){  //i번째 명언의 id
                 quotes.remove(i);
                 System.out.println(id+"번 명언이 삭제되었습니다. ");
+                String path = System.getProperty("user.dir");
+                File file=new File(path+"/db/wiseSaying/"+id+".json");
+                file.delete();
                 return;
             }
         }
-
         System.out.println(id+"번 명언은 존재하지 않습니다.");
     }
     private static void modifyQuote(String command,Scanner scanner){    //수정 메서드
@@ -91,11 +94,12 @@ public class main {
                 System.out.print("명언: ");
                 quote.content=scanner.nextLine().trim();
 
+
                 System.out.println("작가(기존):"+quote.author);
                 System.out.print("작가: ");
                 quote.author=scanner.nextLine().trim();
 
-
+                saveQuoteToFile(quote);
                 System.out.println(id+"번 명언 수정.");
                 return;
             }
@@ -103,9 +107,33 @@ public class main {
         System.out.println(id+ "번 명언은 존재하지 않습니다");
     }
 
+    private static void saveQuoteToFile(Quote quote){
+        String path = System.getProperty("user.dir");
+        try{
+            JSONObject json=new JSONObject();   //Json 객체 생성
+            json.put("id",quote.id);
+            json.put("content",quote.content);
+            json.put("author",quote.author);
 
+            File file=new File(path+"/db/wiseSaying/"+quote.id+".json");
+            FileWriter writer=new FileWriter(file); //FileWriter 객체 생성
+            writer.write(json.toString());  //문자열로 변환하여 작성
+            writer.close(); //리소스 해제
+        } catch (IOException e){
+            System.out.println("json파일 저장 실패"+e.getMessage());
+        }
+    }
 
-
+    private static void saveLastId(){
+        String path = System.getProperty("user.dir");
+        try{
+            FileWriter writer=new FileWriter(path+"/db/wiseSaying/lastId.txt");
+            writer.write(String.valueOf(nextId-1));
+            writer.close();
+        } catch(IOException e){
+            System.out.println("오류 발생"+e.getMessage());
+        }
+    }
 
 
 
