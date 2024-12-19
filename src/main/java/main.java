@@ -33,6 +33,8 @@ public class main {
                 listQuotes();
             } else if (command.startsWith("삭제?id=")) {
                 deleteQuote(command);
+            } else if (command.startsWith("수정?id=")) {
+                modifyQuote(command,scanner);
             }
         }
         scanner.close();    //리소스해제
@@ -78,6 +80,26 @@ public class main {
             }
         }
         System.out.println(id+"번 명언은 존재하지 않습니다.");
+    }
+    private static void modifyQuote(String command,Scanner scanner){    //수정 메서드
+        int id=Integer.parseInt(command.substring(6));
+
+        for(Quote quote:quotes){
+            if(quote.id==id){
+                System.out.println("명언(기존): "+ quote.content);
+                System.out.print("명언: ");
+                quote.content=scanner.nextLine().trim();
+
+                System.out.println("작가(기존):"+quote.author);
+                System.out.print("작가: ");
+                quote.author=scanner.nextLine().trim();
+
+
+                System.out.println(id+"번 명언 수정.");
+                return;
+            }
+        }
+        System.out.println(id+ "번 명언은 존재하지 않습니다");
     }
 
 
