@@ -44,6 +44,7 @@ public class main {
         Quote quote=new Quote(nextId++,content,author);
         quotes.add(quote);
 
+
         System.out.println(quote.id+"번 명언이 등록되었습니다.");
     }
 
