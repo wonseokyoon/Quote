@@ -52,6 +52,8 @@ public class main {
         Quote quote=new Quote(nextId++,content,author);
         quotes.add(quote);
 
+        saveQuoteToFile(quote); //파일에 저장
+        saveLastId();   //ID 저장
 
         System.out.println(quote.id+"번 명언이 등록되었습니다.");
     }
